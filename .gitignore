@@ -1,0 +1,10 @@
+# .gitignore for code-only repo
+state/
+bin/
+__pycache__/
+**/__pycache__/
+*.pyc
+*.pyo
+*.log
+*.pid
+static/reports/
