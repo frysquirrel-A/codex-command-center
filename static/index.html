@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Codex Command Center</title>
+  <meta http-equiv="Cache-Control" content="no-store, max-age=0">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <link rel="stylesheet" href="/styles.css?v=20260315-0105-dashboard">
+</head>
+<body>
+  <div class="bg-orb orb-one" aria-hidden="true"></div>
+  <div class="bg-orb orb-two" aria-hidden="true"></div>
+
+  <div id="authGate" class="auth-gate" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+    <section class="auth-card">
+      <p class="eyebrow">Remote Access</p>
+      <h1 id="authTitle">외부 접속은 코드로 들어가기</h1>
+      <p class="auth-copy">
+        현재 PC의 localhost 접속은 바로 열리고, 다른 기기나 외부 접속만 접속 코드 로그인이 필요합니다.
+      </p>
+      <form id="authForm" class="auth-form" autocomplete="off">
+        <label class="field">
+          <span>접속 코드</span>
+          <input id="codeInput" type="text" placeholder="CC-1234-ABCD-EF12" autocomplete="one-time-code">
+        </label>
+        <button id="authSubmit" class="primary-button" type="submit">들어가기</button>
+      </form>
+      <p id="authHint" class="auth-footnote"></p>
+    </section>
+  </div>
+
+  <div class="app-shell">
+    <header class="topbar surface">
+      <div class="topbar-copy">
+        <p class="eyebrow">Codex Control Plane</p>
+        <h1>실시간 큐 관제탑</h1>
+        <p class="subtitle">대표님 지시는 비서가 먼저 정리하고, 사장이 직접 처리 또는 팀 위임을 결정합니다.</p>
+      </div>
+
+      <section id="resourceCard" class="resource-card topbar-resource" aria-label="로컬 PC 자원 사용량">
+        <div class="resource-head">
+          <div>
+            <span class="eyebrow">Local Resources</span>
+            <strong>CPU / 메모리 / GPU / Codex 한도</strong>
+          </div>
+          <span id="resourceUpdatedAt" class="resource-updated">-</span>
+        </div>
+        <div class="resource-grid">
+          <article class="resource-metric">
+            <div class="resource-copy">
+              <span>CPU</span>
+              <strong id="cpuValue">-</strong>
+            </div>
+            <div class="chart-shell">
+              <span class="chart-max-label">100%</span>
+              <div id="cpuChart" class="mini-chart" aria-hidden="true"></div>
+            </div>
+          </article>
+          <article class="resource-metric">
+            <div class="resource-copy">
+              <span>메모리</span>
+              <strong id="memoryValue">-</strong>
+            </div>
+            <div class="chart-shell">
+              <span class="chart-max-label">100%</span>
+              <div id="memoryChart" class="mini-chart" aria-hidden="true"></div>
+            </div>
+          </article>
+          <article class="resource-metric">
+            <div class="resource-copy">
+              <span>GPU</span>
+              <strong id="gpuValue">-</strong>
+            </div>
+            <div class="chart-shell">
+              <span class="chart-max-label">100%</span>
+              <div id="gpuChart" class="mini-chart" aria-hidden="true"></div>
+            </div>
+          </article>
+          <article class="resource-metric">
+            <div class="resource-copy">
+              <span>Codex 한도</span>
+              <strong id="quotaValue">-</strong>
+            </div>
+            <div class="chart-shell">
+              <span class="chart-max-label">100%</span>
+              <div id="quotaChart" class="mini-chart" aria-hidden="true"></div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <div class="topbar-actions">
+        <div class="chip">
+          <span>최근 갱신</span>
+          <strong id="generatedAt">-</strong>
+        </div>
+        <div class="chip">
+          <span>접속 모드</span>
+          <strong id="accessMode">-</strong>
+        </div>
+        <div class="chip">
+          <span>세션 만료</span>
+          <strong id="sessionExpiresAt">-</strong>
+        </div>
+        <div class="chip">
+          <span>라이브 갱신</span>
+          <strong id="syncState">실시간 연결</strong>
+        </div>
+        <button id="themeToggle" class="secondary-button" type="button" aria-pressed="false">야간 모드</button>
+        <button id="logoutButton" class="ghost-button" type="button" hidden>로그아웃</button>
+      </div>
+    </header>
+
+    <section id="summaryCards" class="summary-grid"></section>
+    <div id="globalBanner" class="global-banner" hidden></div>
+
+    <nav class="tabbar surface" aria-label="주요 화면">
+      <button class="tab active" data-tab="board" type="button">관제</button>
+      <button class="tab" data-tab="flows" type="button">흐름</button>
+      <button class="tab" data-tab="reports" type="button">보고서</button>
+      <button class="tab" data-tab="settings" type="button">설정</button>
+    </nav>
+
+    <main class="tab-panels">
+      <section class="tab-panel active" data-panel="board">
+        <div id="boardGrid" class="board-grid">
+          <section id="boardPaneMembers" class="pane surface board-pane" data-pane="members">
+            <div class="pane-head pane-head-toggle" data-pane-toggle="members" role="button" tabindex="0" aria-expanded="false">
+              <div>
+                <p class="eyebrow">구성원</p>
+                <h2>운영 조직도</h2>
+              </div>
+              <div class="pane-head-meta">
+                <span id="memberCount" class="pane-count">0</span>
+                <span id="memberMode" class="pane-mode">카드 보기</span>
+              </div>
+            </div>
+            <div id="memberList" class="member-list" role="listbox" aria-label="구성원 목록"></div>
+            <div id="orgTree" class="org-tree" hidden aria-label="운영 조직도 트리"></div>
+          </section>
+
+          <section id="boardPaneQueue" class="pane surface board-pane" data-pane="queue">
+            <div class="pane-head pane-head-toggle" data-pane-toggle="queue" role="button" tabindex="0" aria-expanded="false">
+              <div>
+                <p class="eyebrow">현재 큐</p>
+                <h2 id="selectedMemberName">구성원을 선택해 주세요</h2>
+              </div>
+              <span id="selectedMemberStatus" class="pane-status">-</span>
+            </div>
+            <div class="member-summary">
+              <p id="selectedMemberRole" class="member-role">선택한 구성원의 역할과 현재 맡은 일이 여기에 표시됩니다.</p>
+              <div id="selectedMemberStats" class="stat-pills"></div>
+            </div>
+            <div class="queue-layout">
+              <article class="subpane">
+                <div class="subpane-head">
+                  <h3>배정된 큐</h3>
+                  <span id="queueCount">0건</span>
+                </div>
+                <div id="queueFilters" class="queue-filters" aria-label="queue status filters"></div>
+                <div id="queueList" class="queue-list"></div>
+              </article>
+              <article class="subpane">
+                <div class="subpane-head">
+                  <h3>진행사항</h3>
+                  <span id="progressRoute">-</span>
+                </div>
+                <div id="progressPanel" class="progress-panel"></div>
+              </article>
+            </div>
+          </section>
+
+          <section id="boardPaneConversation" class="pane surface board-pane" data-pane="conversation">
+            <div class="pane-head pane-head-toggle" data-pane-toggle="conversation" role="button" tabindex="0" aria-expanded="false">
+              <div>
+                <p class="eyebrow">대표님 대화</p>
+                <h2 id="composerTargetTitle">[비서] 보고자에게 바로 지시</h2>
+              </div>
+              <button id="micButton" class="round-button" type="button" aria-pressed="false" aria-label="PTT 토글">
+                <span class="mic-dot" aria-hidden="true"></span>
+              </button>
+            </div>
+
+            <form id="composerForm" class="composer" autocomplete="off">
+              <div class="composer-meta">
+                <span id="composerTargetMeta">대상 -</span>
+                <span id="composerHint">대표님 지시는 먼저 [비서] 보고자가 받습니다. 비서가 정리하고 필요한 스킬 후보를 고른 뒤, [관리자] 사장이 직접 처리 또는 팀 위임을 결정합니다.</span>
+              </div>
+              <label class="composer-shell" for="promptInput">
+                <textarea id="promptInput" rows="5" maxlength="4000" placeholder="예) 비서가 먼저 요청을 정리하고 필요한 skill 후보를 고른 뒤 사장이 직접 할지 팀에 넘길지 판단해줘."></textarea>
+              </label>
+              <div class="composer-actions">
+                <button id="sendButton" class="primary-button" type="submit">보내기</button>
+              </div>
+            </form>
+            <article id="directiveHistory" class="directive-history"></article>
+            <article id="reportFocus" class="report-focus"></article>
+            <div id="chatLog" class="chat-log" role="log" aria-live="polite"></div>
+          </section>
+        </div>
+      </section>
+
+      <section class="tab-panel" data-panel="flows">
+        <section class="pane surface">
+          <div class="pane-head">
+            <div>
+              <p class="eyebrow">전체 흐름</p>
+              <h2>최근 handoff와 진행 상태</h2>
+            </div>
+          </div>
+          <div id="flowTimeline" class="flow-timeline"></div>
+        </section>
+      </section>
+
+      <section class="tab-panel" data-panel="reports">
+        <section class="pane surface">
+          <div class="pane-head">
+            <div>
+              <p class="eyebrow">보고서</p>
+              <h2>완료 결과와 링크</h2>
+            </div>
+          </div>
+          <div id="reportLibrary" class="report-library"></div>
+        </section>
+      </section>
+
+      <section class="tab-panel" data-panel="settings">
+        <section class="pane surface">
+          <div class="pane-head">
+            <div>
+              <p class="eyebrow">운영 설정</p>
+              <h2>접속과 보호 상태</h2>
+            </div>
+          </div>
+          <div id="settingsPanel" class="settings-panel"></div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <div id="toastHost" class="toast-host" aria-live="polite" aria-atomic="true"></div>
+
+  <template id="toastTemplate">
+    <div class="toast">
+      <div class="toast-copy">
+        <strong class="toast-title"></strong>
+        <p class="toast-detail"></p>
+      </div>
+      <button class="toast-close" type="button" aria-label="알림 닫기">닫기</button>
+    </div>
+  </template>
+
+  <script src="/app.js?v=20260315-0105-dashboard"></script>
+</body>
+</html>
